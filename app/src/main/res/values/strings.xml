@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">PVD-CaixaMEI</string>
+    <string name="r_dashboard_dashboard">Dashboard</string>
+    <string name="acompanhe_as_suas_finan_as">Acompanhe suas finanças</string>
+    <string name="dashboard_atividade_recente">Atividade Recente</string>
+    <string name="dasboard_nenhuma_atividade_neste_m_s">Nenhuma atividade neste mês</string>
+    <string name="Produtos_produtos">Produtos</string>
+    <string name="_5_produtos_em_estoque">5 produtos em estoque</string>
+    <string name="produtos_adicionar_ao_produto">Adicionar ao produto</string>
+    <string name="produtosCard_value">R$ %1$.2f</string>
+    <string name="produtosCard_quantity">%1$d un</string>
+    <string name="ProdutosCard_deletar_produto_do_estoque">Deletar produto do estoque</string>
+    <string name="carrrinhoDeVendasCard_value">R$ %1$.2f x %2$d</string>
+    <string name="DashboardCard_venda">+R$ %1$.2f</string>
+    <string name="DashboardCard_compra">-R$ %1$.2f</string>
+    <string name="vendas">Vendas</string>
+    <string name="compras">Compras</string>
+    <string name="Dashboard_balan_o_do_m_s">Balanço do Mês</string>
+    <string name="NewProduct_fechar_adicionar_produto">Fechar adicionar produto</string>
+    <string name="NewProduct_novo_produto">Novo Produto</string>
+    <string name="NewProduct_nome_do_produto">Nome do Produto</string>
+    <string name="NewProduct_ex_gua_mineral_500ml">Ex: Água Mineral 500ml</string>
+    <string name="NewProduct_categoria_do_produto">Categoria do Produto</string>
+    <string name="NewProduct_pre_o_r">Preço (R$)</string>
+    <string name="NewProduct_ex_bebidas">Ex: Bebidas</string>
+    <string name="ProdutosDialog_estoque_inicial">Estoque Inicial</string>
+    <string name="NewProduct_adicionar_produto">Adicionar Produto</string>
+    <string name="ProductDialogn_o_foi_poss_vel_adicionar_o_produto">Não foi possível adicionar o produto</string>
+</resources>
