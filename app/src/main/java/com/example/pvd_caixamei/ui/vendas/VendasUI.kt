@@ -1,7 +1,6 @@
 package com.example.pvd_caixamei.ui.vendas
 
 import com.example.pvd_caixamei.ui.produtos.ProdutosUiState
-import com.example.pvd_caixamei.ui.produtos.ProdutosViewModel
 
 import android.content.Context
 import androidx.compose.foundation.background
@@ -34,8 +33,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.pvd_caixamei.ui.produtos.componentes.NewProductDialog
-import com.example.pvd_caixamei.ui.produtos.componentes.ProdutosCard
 import com.example.pvd_caixamei.ui.theme.PinkDashboard
 import com.example.pvd_caixamei.ui.vendas.componentes.CarrinhoDeVendaDialog
 import com.example.pvd_caixamei.ui.vendas.componentes.VendasCard
@@ -44,6 +41,7 @@ import com.example.pvd_caixamei.ui.vendas.componentes.VendasCard
 fun VendasUI(
     vendasViewModel: VendasViewModel,
     vendasUiState: State<VendasUiState>,
+    produtosUiState: State<ProdutosUiState>,
     context: Context,
     modifier: Modifier
 ) {
@@ -137,6 +135,7 @@ fun VendasUI(
     // Caixas de Diálogos
     if (vendasUiState.value.openCarrinhaDeVendaDialog) {
         CarrinhoDeVendaDialog(
+            produtoList = produtosUiState.value.produtoList,
             onDismissRequest = { vendasViewModel.closeCarrinhoDeVendasDialog() },
             isValid = true,
             showValidationErros = { vendasViewModel.showValidationErros(context) },
@@ -155,11 +154,11 @@ fun VendasUIPreview() {
     val vendasUiState = vendasViewModel.vendasUiState.collectAsState()
     val context = LocalContext.current
 
-    VendasUI(
+    /*VendasUI(
         vendasViewModel,
         vendasUiState,
         context,
         Modifier
-    )
+    )*/
 
 }

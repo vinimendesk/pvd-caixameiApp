@@ -42,6 +42,7 @@ fun ProdutosCard(
     value: Double,
     quantity: Int,
     category: String,
+    deleteProduct: () -> Unit,
     modifier: Modifier
 ) {
 
@@ -159,7 +160,7 @@ fun ProdutosCard(
 
                 // Deletar produto do estoque
                 IconButton(
-                    onClick = { },
+                    onClick = { deleteProduct() },
                     modifier = Modifier
                         .padding(start = 2.dp)
                 ) {
@@ -189,6 +190,7 @@ fun ProdutosCardPreview() {
         value = 12.00,
         quantity = 50,
         category = "Bebidas",
+        deleteProduct = {},
         modifier = Modifier
     )
 

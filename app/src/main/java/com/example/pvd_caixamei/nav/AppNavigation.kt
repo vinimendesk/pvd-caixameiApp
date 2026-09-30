@@ -20,7 +20,6 @@ import com.example.pvd_caixamei.ui.dashboard.DashboardUI
 import com.example.pvd_caixamei.ui.produtos.ProdutosUI
 import com.example.pvd_caixamei.ui.produtos.ProdutosViewModel
 import com.example.pvd_caixamei.ui.vendas.VendasUI
-import com.example.pvd_caixamei.ui.vendas.VendasUiState
 import com.example.pvd_caixamei.ui.vendas.VendasViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -95,6 +94,7 @@ fun MainNavigation(
                 VendasUI(
                     vendasViewModel = vendasViewModel,
                     vendasUiState = vendasUiState,
+                    produtosUiState = produtosUiState,
                     context = context,
                     modifier = Modifier.padding(paddingValues)
                 )

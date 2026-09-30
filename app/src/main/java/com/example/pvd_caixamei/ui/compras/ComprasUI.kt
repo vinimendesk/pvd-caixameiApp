@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.pvd_caixamei.ui.produtos.ProdutosUiState
 import com.example.pvd_caixamei.ui.theme.PinkDashboard
 import com.example.pvd_caixamei.ui.vendas.VendasUiState
 import com.example.pvd_caixamei.ui.vendas.VendasViewModel
@@ -47,6 +48,7 @@ import com.example.pvd_caixamei.ui.vendas.componentes.VendasCard
 fun ComprasUI(
     vendasViewModel: VendasViewModel,
     vendasUiState: State<VendasUiState>,
+    produtosUiState: State<ProdutosUiState>,
     context: Context,
     modifier: Modifier
 ) {
@@ -185,6 +187,7 @@ fun ComprasUI(
     // Caixas de Diálogos
     if (vendasUiState.value.openCarrinhaDeVendaDialog) {
         CarrinhoDeVendaDialog(
+            produtoList = produtosUiState.value.produtoList,
             onDismissRequest = { vendasViewModel.closeCarrinhoDeVendasDialog() },
             isValid = true,
             showValidationErros = { vendasViewModel.showValidationErros(context) },
@@ -203,11 +206,11 @@ fun VendasUIPreview() {
     val vendasUiState = vendasViewModel.vendasUiState.collectAsState()
     val context = LocalContext.current
 
-    ComprasUI(
+   /* ComprasUI(
         vendasViewModel,
         vendasUiState,
         context,
         Modifier
-    )
+    )*/
 
 }

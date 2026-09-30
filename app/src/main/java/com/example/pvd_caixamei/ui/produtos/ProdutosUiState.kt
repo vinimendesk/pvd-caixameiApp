@@ -1,7 +1,11 @@
 package com.example.pvd_caixamei.ui.produtos
 
+import com.example.pvd_caixamei.data.ProdutoEntity
+
 data class ProdutosUiState(
+    val produtoList: List<ProdutoEntity> = listOf(), // Lista com os dados dos produtos
     val openAddProductDialog: Boolean = false, // Verifica se a caixa de diálogo para adicionar produto está anerta
+    val productId: Int? = null, // Id do produto para busca.
     val productName: String = "", // Nome do produto na caixa de diálogo.
     val categoryName: String = "", // Categoria do produto na caixa de diálogo.
     val productPrice: Double = 0.0, // Preço do produto a ser adicionado.
