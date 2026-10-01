@@ -27,6 +27,7 @@ class ProdutosViewModel: ViewModel() {
     val produtoDao = MainApplication.pvdDatabase.getProdutoDAO()
 
     init {
+        /*deleteAllProduct()*/
         loadAllProducts()
     }
 
@@ -38,6 +39,7 @@ class ProdutosViewModel: ViewModel() {
                 }
             }
         }
+        /*countProdutos()*/
     }
 
     // ----- Função Abrir Caixa de Diálogo -----
@@ -112,6 +114,7 @@ class ProdutosViewModel: ViewModel() {
                         Toast.LENGTH_SHORT
                     ).show()
                     Log.d("RooomDB","${produto.nome} foi adicionado com sucesso.")
+                    /*countProdutos()*/
                     closeAddProduct()
                 }
             } catch (error: Exception) {
@@ -147,10 +150,22 @@ class ProdutosViewModel: ViewModel() {
             it.copy(
                 productName = "",
                 productPrice = 0.0,
-                productNumber = 0,
+                productQuantity = 0,
                 categoryName = "",
             )
         }
+    }
+
+    /*fun countProdutos() {
+        _produtosUiState.update {
+            it.copy(
+                productNumber = _produtosUiState.value.produtoList.size
+            )
+        }
+    }*/
+
+    fun deleteAllProduct() {
+        produtoDao.deleteAllProducts()
     }
 
 }

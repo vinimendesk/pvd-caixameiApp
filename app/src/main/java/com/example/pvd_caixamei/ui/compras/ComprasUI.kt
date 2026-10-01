@@ -97,7 +97,7 @@ fun ComprasUI(
                     .width(85.dp)
                     .clip(RoundedCornerShape(14.dp))
                     .background(PinkDashboard)
-                    .clickable { vendasViewModel.openCarrinhoDeVendasDialog() },
+                    .clickable { vendasViewModel.openCarrinhoDeVendasDialog(produtoList = vendasUiState.value.produtoList) },
                 contentAlignment = Alignment.Center
             ) {
                 Row(
@@ -178,7 +178,7 @@ fun ComprasUI(
             productName = "Refrigerante 2L",
             value = 12.00,
             quantity = 50,
-            category = "Bebidas",
+            /*category = "Bebidas",*/
             modifier = Modifier
         )
 
@@ -192,6 +192,7 @@ fun ComprasUI(
             isValid = true,
             showValidationErros = { vendasViewModel.showValidationErros(context) },
             finishSale = {  },
+            totalValue = 0.0,
             modifier = Modifier
         )
     }

@@ -51,6 +51,7 @@ fun ProdutosUI(
 ) {
 
     val produtosList = produtosUiState.value.produtoList
+    val productCount = produtosUiState.value.productNumber
 
     Column(
         modifier = Modifier
@@ -81,7 +82,7 @@ fun ProdutosUI(
                 )
 
                 Text(
-                    text = stringResource(R.string._5_produtos_em_estoque),
+                    text = stringResource(R.string._5_produtos_em_estoque, productCount),
                     fontSize = 11.sp,
                     color = Color.Gray,
                     modifier = Modifier
@@ -125,6 +126,7 @@ fun ProdutosUI(
                     category = produto.categoria,
                     deleteProduct = {
                         produtosViewModel.deleteProduto(produto)
+                        produtosViewModel.loadAllProducts()
                     },
                     modifier = Modifier
                 )

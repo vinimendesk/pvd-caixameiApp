@@ -1,6 +1,7 @@
 package com.example.pvd_caixamei.ui.vendas.componentes
 
 import android.util.SparseArray
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,6 +30,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,6 +61,7 @@ fun CarrinhoDeVendaDialog(
     onDismissRequest: () -> Unit,
     isValid: Boolean,
     showValidationErros: () -> Unit,
+    totalValue: Double,
     finishSale: () -> Unit,
     modifier: Modifier
 ) {
@@ -137,7 +143,7 @@ fun CarrinhoDeVendaDialog(
                         .align(Alignment.Bottom)
                 )
                 Text(
-                    text = "R$ 16.50",
+                    text = stringResource(R.string.TotalValueVendasDialog, totalValue),
                     fontSize = 22.sp,
                     color = PinkDashboard,
                     fontWeight = FontWeight.Bold,
@@ -182,6 +188,7 @@ fun NewProductDialogPreview() {
         onDismissRequest = {  },
         isValid = true,
         showValidationErros = {  },
+        totalValue = 0.0,
         finishSale = {  },
         modifier = Modifier
     )

@@ -10,9 +10,12 @@ data class ProdutosUiState(
     val categoryName: String = "", // Categoria do produto na caixa de diálogo.
     val productPrice: Double = 0.0, // Preço do produto a ser adicionado.
     val productQuantity: Int = 0, // Quantidade inicial no estoque na caixa de diálogo.
-    val productNumber: Int = 0, // Número de produtos cadastrados
+    // val productNumber: Int = 0,  Número de produtos cadastrados
     val showErros: Boolean = false // Diz se pode mostrar os erros.
 ) {
+
+    val productNumber: Int
+        get() = produtoList.size
 
     // Verifica se o nome do produto está vazio.
     val productNameError: Boolean get() = showErros && productName.isBlank()
