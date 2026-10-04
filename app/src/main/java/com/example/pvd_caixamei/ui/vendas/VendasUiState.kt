@@ -16,8 +16,13 @@ data class VendasUiState (
 
     ) {
 
+        // valor total no carrinho de vendas.
         val totalValue: Double
             get() = produtoList.sumOf { it.price }
+
+        // valor total de todas as vendas feitas.
+        val totalValueAllVendas: Double
+            get() = vendasList.sumOf { it.valorVenda }
 
         // Verifica se o nome do produto está vazio.
         val shoppingCarListError: Boolean get() = showErros && shoppingCarList.isEmpty()
