@@ -5,7 +5,7 @@
     <string name="dashboard_atividade_recente">Atividade Recente</string>
     <string name="dasboard_nenhuma_atividade_neste_m_s">Nenhuma atividade neste mês</string>
     <string name="Produtos_produtos">Produtos</string>
-    <string name="_5_produtos_em_estoque">5 produtos em estoque</string>
+    <string name="_5_produtos_em_estoque">%1d produtos em estoque</string>
     <string name="produtos_adicionar_ao_produto">Adicionar ao produto</string>
     <string name="produtosCard_value">R$ %1$.2f</string>
     <string name="produtosCard_quantity">%1$d un</string>
@@ -26,4 +26,5 @@
     <string name="ProdutosDialog_estoque_inicial">Estoque Inicial</string>
     <string name="NewProduct_adicionar_produto">Adicionar Produto</string>
     <string name="ProductDialogn_o_foi_poss_vel_adicionar_o_produto">Não foi possível adicionar o produto</string>
+    <string name="TotalValueVendasDialog">R$ %1$.2f</string>
 </resources>

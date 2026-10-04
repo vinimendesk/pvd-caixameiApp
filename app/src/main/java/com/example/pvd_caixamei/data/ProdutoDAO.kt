@@ -20,6 +20,9 @@ interface ProdutoDAO {
 
     @Delete fun deleteProduto(produto: ProdutoEntity)
 
+    @Query("DELETE FROM ProdutoEntity")
+    fun deleteAllProducts()
+
     @Update fun updateProduto(produto: ProdutoEntity)
 
 }

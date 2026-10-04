@@ -9,9 +9,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
@@ -19,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pvd_caixamei.R
+import com.example.pvd_caixamei.data.ProdutoEntity
 import com.example.pvd_caixamei.ui.produtos.componentes.NewProductDialog
 import com.example.pvd_caixamei.ui.produtos.componentes.ProdutosCard
 import com.example.pvd_caixamei.ui.theme.PinkDashboard
@@ -43,6 +49,9 @@ fun ProdutosUI(
     context: Context,
     modifier: Modifier
 ) {
+
+    val produtosList = produtosUiState.value.produtoList
+    val productCount = produtosUiState.value.productNumber
 
     Column(
         modifier = Modifier
@@ -73,7 +82,7 @@ fun ProdutosUI(
                 )
 
                 Text(
-                    text = stringResource(R.string._5_produtos_em_estoque),
+                    text = stringResource(R.string._5_produtos_em_estoque, productCount),
                     fontSize = 11.sp,
                     color = Color.Gray,
                     modifier = Modifier
@@ -102,14 +111,27 @@ fun ProdutosUI(
         }
 
         // Lista de produtos no estoque
-        ProdutosCard(
-            image = null,
-            productName = "Refrigerante 2L",
-            value = 12.00,
-            quantity = 50,
-            category = "Bebidas",
+        LazyColumn(
             modifier = Modifier
-        )
+                .fillMaxWidth()
+                .heightIn(max = 500.dp,),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ){
+            items(produtosList) { produto ->
+                ProdutosCard(
+                    image = null,
+                    productName = produto.nome,
+                    value = produto.price,
+                    quantity = produto.estoque,
+                    category = produto.categoria,
+                    deleteProduct = {
+                        produtosViewModel.deleteProduto(produto)
+                        produtosViewModel.loadAllProducts()
+                    },
+                    modifier = Modifier
+                )
+            }
+        }
 
     }
 
@@ -127,7 +149,17 @@ fun ProdutosUI(
             onProductPriceChange = { productPrice -> produtosViewModel.onProductPrice(productPrice) },
             onQuantityChange = { productQuantity -> produtosViewModel.onProducQuantityChange(productQuantity) },
             showValidationErros = { produtosViewModel.showValidationErros(context) },
-            addNewProduct = {  },
+            addNewProduct = {
+                produtosViewModel.addProduto(
+                    ProdutoEntity(
+                        nome = produtosUiState.value.productName,
+                        categoria = produtosUiState.value.categoryName,
+                        price = produtosUiState.value.productPrice,
+                        estoque = produtosUiState.value.productQuantity
+                    ),
+                    context = context
+                )
+            },
             productNameError = produtosUiState.value.productNameError,
             categoryNameError = produtosUiState.value.categoryNameError,
             modifier = Modifier

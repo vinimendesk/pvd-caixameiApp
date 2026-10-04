@@ -1,6 +1,7 @@
 package com.example.pvd_caixamei
 
 import android.app.Application
+import android.util.Log
 import androidx.room.Room
 import com.example.pvd_caixamei.data.PvdDatabase
 
@@ -12,6 +13,9 @@ class MainApplication: Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        Log.d("MainApplication", "MainApplication.onCreate() foi executado")
+
         pvdDatabase = Room.databaseBuilder(
             applicationContext,
             PvdDatabase::class.java,
@@ -20,6 +24,8 @@ class MainApplication: Application() {
 
             .fallbackToDestructiveMigration()
             .build()
+
+        Log.d("MainApplication", "pvdDatabase foi inicializado")
     }
 
 }

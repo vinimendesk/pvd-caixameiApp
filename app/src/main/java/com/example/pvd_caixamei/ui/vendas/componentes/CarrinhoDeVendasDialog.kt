@@ -1,5 +1,7 @@
 package com.example.pvd_caixamei.ui.vendas.componentes
 
+import android.util.SparseArray
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,8 +11,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -25,6 +30,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,13 +52,16 @@ import com.example.pvd_caixamei.R
 import com.example.pvd_caixamei.animations.errorContainerColor
 import com.example.pvd_caixamei.animations.errorTextColor
 import com.example.pvd_caixamei.animations.shakeAnimation
+import com.example.pvd_caixamei.data.ProdutoEntity
 import com.example.pvd_caixamei.ui.theme.PinkDashboard
 
 @Composable
 fun CarrinhoDeVendaDialog(
+    produtoList: List<ProdutoEntity>,
     onDismissRequest: () -> Unit,
     isValid: Boolean,
     showValidationErros: () -> Unit,
+    totalValue: Double,
     finishSale: () -> Unit,
     modifier: Modifier
 ) {
@@ -96,15 +108,25 @@ fun CarrinhoDeVendaDialog(
                 }
             }
 
-            CarrinhoDeVendasCard(
-                image = Icons.Outlined.Inventory2,
-                productName = "Refrigerante 2L",
-                value = 12.00,
-                quantity = 50,
-                category = "Bebidas",
+            LazyColumn(
                 modifier = Modifier
-            )
-            Spacer(modifier = Modifier.height(370.dp)) // Na versão final, coloque 430.dp
+                    .fillMaxWidth()
+                    .heightIn(max = 400.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(produtoList) { produto ->
+                    CarrinhoDeVendasCard(
+                        image = Icons.Outlined.Inventory2,
+                        productName = produto.nome,
+                        value = produto.price,
+                        quantity = produto.estoque,
+                        category = produto.categoria,
+                        modifier = Modifier
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
 
             // Valor Total + Botão Finalizar Venda
             Row(
@@ -121,7 +143,7 @@ fun CarrinhoDeVendaDialog(
                         .align(Alignment.Bottom)
                 )
                 Text(
-                    text = "R$ 16.50",
+                    text = stringResource(R.string.TotalValueVendasDialog, totalValue),
                     fontSize = 22.sp,
                     color = PinkDashboard,
                     fontWeight = FontWeight.Bold,
@@ -162,9 +184,11 @@ fun CarrinhoDeVendaDialog(
 fun NewProductDialogPreview() {
 
     CarrinhoDeVendaDialog(
+        produtoList = listOf(),
         onDismissRequest = {  },
         isValid = true,
         showValidationErros = {  },
+        totalValue = 0.0,
         finishSale = {  },
         modifier = Modifier
     )

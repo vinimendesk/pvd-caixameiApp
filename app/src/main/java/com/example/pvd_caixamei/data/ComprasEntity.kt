@@ -9,7 +9,7 @@ data class ComprasEntity (
     @PrimaryKey(autoGenerate = true)
     val compraId: Int = 0,
     val nomeCompra: String,
-    val produtos: List<ProdutoEntity>,
+    val quantity: Int,
     val price: Double,
     val dateTime: LocalDateTime
 )

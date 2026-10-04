@@ -39,7 +39,7 @@ fun VendasCard(
     productName: String,
     value: Double,
     quantity: Int,
-    category: String,
+    /*category: String,*/
     modifier: Modifier
 ) {
 
@@ -163,7 +163,7 @@ fun ProdutosCardPreview() {
         productName = "Refrigerante 2L",
         value = 12.00,
         quantity = 50,
-        category = "Bebidas",
+        /*category = "Bebidas",*/
         modifier = Modifier
     )
 

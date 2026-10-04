@@ -9,7 +9,7 @@ data class VendasEntity (
     @PrimaryKey(autoGenerate = true)
     val vendaId: Int = 0,
     val nomeVenda: String,
-    val produtos: List<ProdutoEntity>,
+    val quantity: Int,
     val valorVenda: Double,
     val dateTime: LocalDateTime
 )
