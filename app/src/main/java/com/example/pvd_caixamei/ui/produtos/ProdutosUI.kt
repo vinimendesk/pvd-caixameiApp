@@ -114,7 +114,7 @@ fun ProdutosUI(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(max = 500.dp,),
+                .heightIn(max = 500.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ){
             items(produtosList) { produto ->
@@ -154,14 +154,16 @@ fun ProdutosUI(
                     ProdutoEntity(
                         nome = produtosUiState.value.productName,
                         categoria = produtosUiState.value.categoryName,
-                        price = produtosUiState.value.productPrice,
-                        estoque = produtosUiState.value.productQuantity
+                        price = produtosUiState.value.productPrice.toDoubleOrNull() ?: 0.0,
+                        estoque = produtosUiState.value.productQuantity.toIntOrNull() ?: 0
                     ),
                     context = context
                 )
             },
             productNameError = produtosUiState.value.productNameError,
             categoryNameError = produtosUiState.value.categoryNameError,
+            productPriceError = produtosUiState.value.productPriceError,
+            productQuantityError = produtosUiState.value.productQuantityError,
             modifier = Modifier
         )
     }

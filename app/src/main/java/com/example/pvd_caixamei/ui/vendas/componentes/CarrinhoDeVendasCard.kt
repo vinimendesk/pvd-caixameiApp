@@ -37,14 +37,15 @@ import androidx.compose.ui.unit.sp
 import com.example.pvd_caixamei.R
 import com.example.pvd_caixamei.ui.theme.PinkBottomNavigationBar
 import com.example.pvd_caixamei.ui.theme.PinkBottomNavigationBarSelected
+import com.example.pvd_caixamei.ui.theme.PinkDashboard
 
 @Composable
 fun CarrinhoDeVendasCard(
+    item: ShoppingCartItem,
+    onIncrease: () -> Unit,
+    onDecrease: () -> Unit,
+    onRemove: () -> Unit,
     image: ImageVector?,
-    productName: String,
-    value: Double,
-    quantity: Int,
-    category: String,
     modifier: Modifier
 ) {
 
@@ -75,7 +76,7 @@ fun CarrinhoDeVendasCard(
 
                     // Product Name
                     Text(
-                        text = productName,
+                        text = item.produto.nome,
                         fontSize = 18.sp,
                         modifier = Modifier
                             .padding(bottom = 4.dp)
@@ -86,12 +87,19 @@ fun CarrinhoDeVendasCard(
                     ) {
                         // Value
                         Text(
-                            text = stringResource(R.string.carrrinhoDeVendasCard_value, value, quantity),
+                            text = stringResource(R.string.carrrinhoDeVendasCard_value, item.produto.price, item.produto.estoque),
                             fontSize = 12.sp,
                             color = Color.Gray,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
                                 .padding(end = 8.dp)
+                        )
+
+                        Text(
+                            text = ": R$ %.2f".format(item.totalValue),
+                            fontSize = 12.sp,
+                            color = PinkDashboard,
+                            fontWeight = FontWeight.Bold
                         )
                     }
 
@@ -109,7 +117,7 @@ fun CarrinhoDeVendasCard(
 
                 // Menos
                 IconButton(
-                    onClick = {  },
+                    onClick = { onDecrease() },
                     modifier = Modifier
                         .clip(RoundedCornerShape(25.dp))
                         .size(25.dp)
@@ -117,7 +125,7 @@ fun CarrinhoDeVendasCard(
                 ) {
                         Icon(
                             imageVector = Icons.Default.Minimize,
-                            contentDescription = "Remover um item de $productName do carrinho",
+                            contentDescription = "Remover um item de ${item.produto.nome} do carrinho",
                             tint = Color.Black,
                             modifier = Modifier
                                 .padding(bottom = 10.dp)
@@ -128,7 +136,7 @@ fun CarrinhoDeVendasCard(
                 Spacer(modifier = Modifier.width(12.dp))
 
                 Text(
-                    text = "1",
+                    text = item.quantity.toString(),
 
                 )
 
@@ -136,7 +144,7 @@ fun CarrinhoDeVendasCard(
 
                 // Mais
                 IconButton(
-                    onClick = {  },
+                    onClick = { onIncrease() },
                     modifier = Modifier
                         .clip(RoundedCornerShape(25.dp))
                         .size(25.dp)
@@ -144,7 +152,7 @@ fun CarrinhoDeVendasCard(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Remover um item de $productName do carrinho",
+                        contentDescription = "Remover um item de ${item.produto.nome} do carrinho",
                         tint = Color.Black,
                         modifier = Modifier
                             .size(13.dp)
@@ -154,7 +162,7 @@ fun CarrinhoDeVendasCard(
 
                 // Excluir
                 IconButton(
-                    onClick = {  },
+                    onClick = { onRemove() },
                     modifier = Modifier
                         .clip(RoundedCornerShape(25.dp))
                         .size(25.dp)
@@ -162,7 +170,7 @@ fun CarrinhoDeVendasCard(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Remover um item de $productName do carrinho",
+                        contentDescription = "Remover um item de ${item.produto.nome} do carrinho",
                         tint = Color.Red,
                         modifier = Modifier
                             .size(13.dp)
@@ -182,13 +190,13 @@ fun CarrinhoDeVendasCard(
 @Composable
 fun CarrinhoDeVendaCardPreview() {
 
-    CarrinhoDeVendasCard(
+    /*CarrinhoDeVendasCard(
         image = Icons.Outlined.Inventory2,
         productName = "Refrigerante 2L",
         value = 12.00,
         quantity = 50,
         category = "Bebidas",
         modifier = Modifier
-    )
+    )*/
 
 }

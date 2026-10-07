@@ -13,7 +13,7 @@ interface VendasDAO {
     @Query("SELECT * FROM VendasEntity")
     fun getAllVendas(): Flow<List<VendasEntity>>
 
-    @Insert fun addVendas(venda: VendasEntity)
+    @Insert fun addVendas(venda: VendasEntity): Long
 
     @Delete fun deleteProduto(produto: ProdutoEntity)
 

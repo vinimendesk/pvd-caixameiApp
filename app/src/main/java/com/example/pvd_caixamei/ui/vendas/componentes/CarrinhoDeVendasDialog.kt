@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Inventory2
 import androidx.compose.material3.Button
@@ -58,8 +59,14 @@ import com.example.pvd_caixamei.ui.theme.PinkDashboard
 @Composable
 fun CarrinhoDeVendaDialog(
     produtoList: List<ProdutoEntity>,
+    shoppingCart: List<ShoppingCartItem>,
+    onAddProduct: (ProdutoEntity) -> Unit,
+    onIncreaseProduct: (Int) -> Unit,
+    onDecreaseProduct: (Int) -> Unit,
+    onRemoveProduct: (Int) -> Unit,
     onDismissRequest: () -> Unit,
     isValid: Boolean,
+    onOpenProductSelector: () -> Unit,
     showValidationErros: () -> Unit,
     totalValue: Double,
     finishSale: () -> Unit,
@@ -77,7 +84,7 @@ fun CarrinhoDeVendaDialog(
                 .height(600.dp)
                 .clip(RoundedCornerShape(20.dp))
                 .background(Color.White)
-                .padding(horizontal = 18.dp)
+                .padding(horizontal = 12.dp)
         ) {
 
             // Novo Produto + Botão de Fechar
@@ -108,19 +115,40 @@ fun CarrinhoDeVendaDialog(
                 }
             }
 
+            Spacer(
+                modifier = Modifier.height(12.dp)
+            )
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(max = 400.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(produtoList) { produto ->
+                items(
+                    items = shoppingCart,
+                    key = {
+                        it.produto.produtoId
+                    }
+                ) { item ->
                     CarrinhoDeVendasCard(
-                        image = Icons.Outlined.Inventory2,
-                        productName = produto.nome,
-                        value = produto.price,
-                        quantity = produto.estoque,
-                        category = produto.categoria,
+                        image = null,
+                        item = item,
+                        onIncrease = {
+                            onIncreaseProduct(
+                                item.produto.produtoId
+                            )
+                        },
+                        onDecrease = {
+                            onDecreaseProduct(
+                                item.produto.produtoId
+                            )
+                        },
+                        onRemove = {
+                            onRemoveProduct(
+                                item.produto.produtoId
+                            )
+                        },
                         modifier = Modifier
                     )
                 }
@@ -152,14 +180,43 @@ fun CarrinhoDeVendaDialog(
             }
 
             Spacer(modifier = Modifier.height(12.dp))
+
+            // BOTÃO ADICIONAR PRODUTO
+            // =========================================================
+
+            Button(
+                onClick = {
+                    onOpenProductSelector()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = PinkDashboard
+                ),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Adicionar produto ao carrinho"
+                )
+
+                Spacer(
+                    modifier = Modifier.width(8.dp)
+                )
+
+                Text(
+                    text = "Adicionar produto"
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
 11
             // Button "Adicionar Produto"
             Button(
                 onClick = {
 
-                    showValidationErros()
-
-                    if (isValid) {
+                    if (!isValid) {
+                        showValidationErros()
+                    } else {
                         finishSale()
                     }
                 },
@@ -183,7 +240,7 @@ fun CarrinhoDeVendaDialog(
 @Composable
 fun NewProductDialogPreview() {
 
-    CarrinhoDeVendaDialog(
+    /*CarrinhoDeVendaDialog(
         produtoList = listOf(),
         onDismissRequest = {  },
         isValid = true,
@@ -191,6 +248,6 @@ fun NewProductDialogPreview() {
         totalValue = 0.0,
         finishSale = {  },
         modifier = Modifier
-    )
+    )*/
 
 }

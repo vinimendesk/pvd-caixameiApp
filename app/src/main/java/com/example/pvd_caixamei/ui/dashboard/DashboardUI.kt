@@ -49,6 +49,8 @@ fun DashboardUI(
 
     val vendasList = vendasUiState.value.vendasList
 
+    val vendasListOrd = vendasList.sortedByDescending { it.dateTime }
+
 
     Column(
         modifier = Modifier
@@ -89,7 +91,7 @@ fun DashboardUI(
                     .fillMaxSize()
             ) {
                 Text(
-                    text = "Abril 2026",
+                    text = "Acompanhamento Financeiro",
                     fontSize = 14.sp,
                     color = Color.Black,
                     fontWeight = FontWeight.Bold
@@ -139,8 +141,8 @@ fun DashboardUI(
                 .heightIn(max = 500.dp,),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(vendasList) { venda ->
-                if (vendasList.size == 0) {
+            items(vendasListOrd) { venda ->
+                if (vendasListOrd.size == 0) {
                     // Nenhuma atividade neste mês
                     Text(
                         text = stringResource(R.string.dasboard_nenhuma_atividade_neste_m_s),

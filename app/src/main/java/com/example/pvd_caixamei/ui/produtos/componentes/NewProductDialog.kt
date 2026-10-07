@@ -47,8 +47,8 @@ import com.example.pvd_caixamei.ui.theme.PinkDashboard
 fun NewProductDialog(
     productName: String,
     categoryName: String,
-    productPrice: Double,
-    quantity: Int,
+    productPrice: String,
+    quantity: String,
     onCategoryChange: (String) -> Unit,
     onProductNameChange: (String) -> Unit,
     onProductPriceChange: (String) -> Unit,
@@ -59,6 +59,8 @@ fun NewProductDialog(
     addNewProduct: () -> Unit,
     productNameError: Boolean,
     categoryNameError: Boolean,
+    productPriceError: Boolean,
+    productQuantityError: Boolean,
     modifier: Modifier
 ) {
 
@@ -72,6 +74,16 @@ fun NewProductDialog(
     val categoryShake = shakeAnimation(categoryError, null)
     val categoryColor = errorContainerColor(categoryError, null)
     val categoryText = errorTextColor(categoryError, null)
+
+    val priceError = productPriceError
+    val priceShake = shakeAnimation(priceError, null)
+    val priceColor = errorContainerColor(priceError, null)
+    val priceText = errorTextColor(priceError, null)
+
+    val quantityError = productQuantityError
+    val quantityShake = shakeAnimation(productQuantityError, null)
+    val quantityColor = errorContainerColor(productQuantityError, null)
+    val quantityText = errorTextColor(productQuantityError, null)
 
     Dialog(
         onDismissRequest = onDismissRequest,
@@ -207,12 +219,19 @@ fun NewProductDialog(
                         placeholder = {
                             Text(
                                 text = "0.00",
-                                color = Color.Gray,
+                                color = priceText,
                             )
                         },
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = priceColor,
+                            unfocusedContainerColor = priceColor,
+                            disabledContainerColor = priceColor,
+                            errorContainerColor = priceColor
+                        ),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
                         shape = RoundedCornerShape(14.dp),
                         modifier = Modifier
+                            .graphicsLayer( translationX = priceShake )
                             .width(125.dp)
                             .height(60.dp)
                             .padding(bottom = 12.dp)
@@ -238,12 +257,19 @@ fun NewProductDialog(
                         placeholder = {
                             Text(
                                 text = "0",
-                                color = Color.Gray,
+                                color = quantityText,
                             )
                         },
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = quantityColor,
+                            unfocusedContainerColor = quantityColor,
+                            disabledContainerColor = quantityColor,
+                            errorContainerColor = quantityColor
+                        ),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
                         shape = RoundedCornerShape(14.dp),
                         modifier = Modifier
+                            .graphicsLayer( translationX = quantityShake )
                             .width(125.dp)
                             .height(60.dp)
                             .padding(bottom = 12.dp)
@@ -282,7 +308,7 @@ fun NewProductDialog(
 @Composable
 fun NewProductDialogPreview() {
 
-    NewProductDialog(
+    /*NewProductDialog(
         productName = "",
         categoryName = "",
         productPrice = 0.00,
@@ -298,6 +324,6 @@ fun NewProductDialogPreview() {
         categoryNameError = false,
         productNameError = false,
         modifier = Modifier
-    )
+    )*/
 
 }

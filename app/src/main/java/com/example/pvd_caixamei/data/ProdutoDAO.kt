@@ -23,6 +23,25 @@ interface ProdutoDAO {
     @Query("DELETE FROM ProdutoEntity")
     fun deleteAllProducts()
 
-    @Update fun updateProduto(produto: ProdutoEntity)
+    @Update
+    fun updateProduto(produto: ProdutoEntity)
+
+    // Diminui o estoque do produto.
+    // A condição "estoque >= :quantidade" garante que
+    // nunca seja possível deixar o estoque negativo.
+    //
+    // O retorno é a quantidade de linhas alteradas:
+    // 1 = estoque atualizado com sucesso
+    // 0 = produto não existe ou estoque insuficiente
+    @Query("""
+        UPDATE ProdutoEntity
+        SET estoque = estoque - :quantidade
+        WHERE produtoId = :produtoId
+        AND estoque >= :quantidade
+    """)
+    fun diminuirEstoque(
+        produtoId: Int,
+        quantidade: Int
+    ): Int
 
 }

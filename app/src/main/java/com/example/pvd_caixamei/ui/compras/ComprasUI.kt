@@ -186,7 +186,7 @@ fun ComprasUI(
 
     // Caixas de Diálogos
     if (vendasUiState.value.openCarrinhaDeVendaDialog) {
-        CarrinhoDeVendaDialog(
+        /*CarrinhoDeVendaDialog(
             produtoList = produtosUiState.value.produtoList,
             onDismissRequest = { vendasViewModel.closeCarrinhoDeVendasDialog() },
             isValid = true,
@@ -194,7 +194,7 @@ fun ComprasUI(
             finishSale = {  },
             totalValue = 0.0,
             modifier = Modifier
-        )
+        )*/
     }
 
 }

@@ -41,6 +41,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pvd_caixamei.data.VendasEntity
 import com.example.pvd_caixamei.ui.produtos.componentes.ProdutosCard
 import com.example.pvd_caixamei.ui.theme.PinkDashboard
+import com.example.pvd_caixamei.ui.vendas.componentes.AdicionarProdutoDialog
 import com.example.pvd_caixamei.ui.vendas.componentes.CarrinhoDeVendaDialog
 import com.example.pvd_caixamei.ui.vendas.componentes.VendasCard
 import java.time.LocalDateTime
@@ -57,6 +58,7 @@ fun VendasUI(
 
     val produtoList = vendasUiState.value.produtoList
     val vendasList = vendasUiState.value.vendasList
+    val vendasListOrd = vendasList.sortedByDescending { it.dateTime }
 
     Column(
         modifier = Modifier
@@ -137,14 +139,14 @@ fun VendasUI(
 
         }
 
-        // Lista de produtos no estoque
+        // Histórico de Vendas
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(max = 500.dp,),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ){
-            items(vendasList) { venda ->
+            items(vendasListOrd) { venda ->
                 VendasCard(
                     image = null,
                     productName = venda.nomeVenda,
@@ -161,26 +163,57 @@ fun VendasUI(
     if (vendasUiState.value.openCarrinhaDeVendaDialog) {
         CarrinhoDeVendaDialog(
             produtoList = produtoList,
+            shoppingCart =  vendasUiState.value.shoppingCarList,
             onDismissRequest = { vendasViewModel.closeCarrinhoDeVendasDialog() },
+            onOpenProductSelector = { vendasViewModel.openProductSelectorDialog() },
+            onAddProduct = { produto ->
+                vendasViewModel.addProductToCart(
+                    produto
+                )
+
+                vendasViewModel.closeProductSelectorDialog()
+            },
+            onIncreaseProduct = { produtoId ->
+                vendasViewModel.increaseProductQuantity(
+                    produtoId
+                )
+            },
+            onDecreaseProduct = { produtoId ->
+                vendasViewModel.decreaseProductQuantity(
+                    produtoId
+                )
+            },
+            onRemoveProduct = { produtoId ->
+                vendasViewModel.removeProductFromCart(
+                    produtoId
+                )
+            },
             isValid = true,
             totalValue = vendasUiState.value.totalValue,
             showValidationErros = { vendasViewModel.showValidationErros(context) },
-            finishSale = {
-
-                produtoList.forEach { produto ->
-
-                    vendasViewModel.addVendas(
-                        context = context,
-                        venda = VendasEntity(
-                            nomeVenda = produto.nome,
-                            valorVenda = produto.price,
-                            quantity =  produto.estoque,
-                            dateTime = LocalDateTime.now()
-                        )
-                    )
-                }
-                         },
+            finishSale = { vendasViewModel.finishSale(context) },
             modifier = Modifier
+        )
+    }
+
+    if (vendasUiState.value.openProductSelectorDialog) {
+
+        AdicionarProdutoDialog(
+
+            produtoList = produtosUiState.value.produtoList,
+
+            onProductSelected = { produto ->
+
+                vendasViewModel.addProductToCart(
+                    produto
+                )
+
+                vendasViewModel.closeProductSelectorDialog()
+            },
+
+            onDismissRequest = {
+                vendasViewModel.closeProductSelectorDialog()
+            }
         )
     }
 

@@ -69,13 +69,13 @@ class ProdutosViewModel: ViewModel() {
 
     fun onProductPrice(productPrice: String) {
         _produtosUiState.update {
-            it.copy(productPrice = productPrice.toDouble())
+            it.copy(productPrice = productPrice)
         }
     }
 
     fun onProducQuantityChange(productQuantity: String) {
         _produtosUiState.update {
-            it.copy(productQuantity = if (productQuantity.isNotBlank()) productQuantity.toInt() else 0)
+            it.copy(productQuantity = productQuantity)
         }
     }
 
@@ -149,8 +149,8 @@ class ProdutosViewModel: ViewModel() {
         _produtosUiState.update {
             it.copy(
                 productName = "",
-                productPrice = 0.0,
-                productQuantity = 0,
+                productPrice = "",
+                productQuantity = "",
                 categoryName = "",
             )
         }
