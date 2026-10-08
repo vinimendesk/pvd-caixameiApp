@@ -1,4 +1,7 @@
-package com.example.pvd_caixamei.ui.vendas.componentes
+package com.example.pvd_caixamei.ui.compras.componentes
+
+import com.example.pvd_caixamei.ui.vendas.componentes.CarrinhoDeVendasCard
+import com.example.pvd_caixamei.ui.vendas.componentes.ShoppingCartItem
 
 import android.util.SparseArray
 import androidx.annotation.StringRes
@@ -18,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
@@ -57,19 +61,20 @@ import com.example.pvd_caixamei.data.ProdutoEntity
 import com.example.pvd_caixamei.ui.theme.PinkDashboard
 
 @Composable
-fun CarrinhoDeVendaDialog(
+fun CarrinhoDeComprasDialog(
     produtoList: List<ProdutoEntity>,
-    shoppingCart: List<ShoppingCartItem>,
+    shoppingCart: List<ShoppingCartCompraItem>,
     onAddProduct: (ProdutoEntity) -> Unit,
     onIncreaseProduct: (Int) -> Unit,
     onDecreaseProduct: (Int) -> Unit,
     onRemoveProduct: (Int) -> Unit,
     onDismissRequest: () -> Unit,
+    onUnitPriceChange: (produtoId: Int, price: String) -> Unit,
     isValid: Boolean,
     onOpenProductSelector: () -> Unit,
     showValidationErros: () -> Unit,
     totalValue: Double,
-    finishSale: () -> Unit,
+    finishBuy: () -> Unit,
     modifier: Modifier
 ) {
 
@@ -97,7 +102,7 @@ fun CarrinhoDeVendaDialog(
             ) {
 
                 Text(
-                    text = "Carrinho de Venda",
+                    text = "Carrinho de Compra",
                     fontSize = 16.sp,
                     color = Color.Black,
                     fontWeight = FontWeight.Bold,
@@ -122,7 +127,7 @@ fun CarrinhoDeVendaDialog(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(max = 400.dp),
+                    .heightIn(max = 300.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(
@@ -131,8 +136,7 @@ fun CarrinhoDeVendaDialog(
                         it.produto.produtoId
                     }
                 ) { item ->
-                    CarrinhoDeVendasCard(
-                        image = null,
+                    CarrinhoDeComprasCard(
                         item = item,
                         onIncrease = {
                             onIncreaseProduct(
@@ -148,6 +152,12 @@ fun CarrinhoDeVendaDialog(
                             onRemoveProduct(
                                 item.produto.produtoId
                             )
+                        },
+                        onUnitPriceChange = { price ->
+                                onUnitPriceChange(
+                                    item.produto.produtoId,
+                                    price
+                                )
                         },
                         modifier = Modifier
                     )
@@ -209,7 +219,7 @@ fun CarrinhoDeVendaDialog(
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-11
+            11
             // Button "Adicionar Produto"
             Button(
                 onClick = {
@@ -217,7 +227,7 @@ fun CarrinhoDeVendaDialog(
                     if (!isValid) {
                         showValidationErros()
                     } else {
-                        finishSale()
+                        finishBuy()
                     }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = PinkDashboard),
@@ -225,7 +235,7 @@ fun CarrinhoDeVendaDialog(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Finalizar Venda",
+                    text = "Finalizar Compra",
                     color = Color.White
                 )
             }

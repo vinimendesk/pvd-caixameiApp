@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pvd_caixamei.R
+import com.example.pvd_caixamei.ui.compras.ComprasUiState
 import com.example.pvd_caixamei.ui.dashboard.componentes.DashboardCard
 import com.example.pvd_caixamei.ui.dashboard.componentes.DashboardCardBalanco
 import com.example.pvd_caixamei.ui.dashboard.componentes.DashboardCardVendasCompras
@@ -44,10 +45,56 @@ import java.time.LocalDateTime
 @Composable
 fun DashboardUI(
     vendasUiState: State<VendasUiState>,
+    comprasUiState: State<ComprasUiState>,
     modifier: Modifier
 ) {
 
     val vendasList = vendasUiState.value.vendasList
+    val comprasList = comprasUiState.value.comprasList
+
+    val vendasListOrd = vendasList.sortedByDescending { it.dateTime }
+    val comprasListOrd = comprasList.sortedByDescending { it.dateTime }
+
+    // Soma todo o dinheiro recebido através das vendas.
+    val totalVendas = vendasList.sumOf { it.valorVenda }
+
+    // Soma todo o dinheiro gasto através das compras.
+    val totalCompras = comprasList.sumOf { it.price }
+
+    // Resultado financeiro.
+    // Vendas entram, compras saem.
+    val balanco = totalVendas - totalCompras
+
+    val movimentacoes = buildList {
+
+        // Adiciona todas as vendas.
+        vendasList.forEach { venda ->
+
+            add(
+                DashboardMovimentacao(
+                    nome = venda.nomeVenda,
+                    quantidade = venda.quantity,
+                    valor = venda.valorVenda,
+                    dateTime = venda.dateTime,
+                    type = 0
+                )
+            )
+        }
+
+        // Adiciona todas as compras.
+        comprasList.forEach { compra ->
+
+            add(
+                DashboardMovimentacao(
+                    nome = compra.nomeCompra,
+                    quantidade = compra.quantity,
+                    valor = compra.price,
+                    dateTime = compra.dateTime,
+                    type = 1
+                )
+            )
+        }
+    }.sortedByDescending { it.dateTime }
 
 
     Column(
@@ -89,7 +136,7 @@ fun DashboardUI(
                     .fillMaxSize()
             ) {
                 Text(
-                    text = "Abril 2026",
+                    text = "Acompanhamento Financeiro",
                     fontSize = 14.sp,
                     color = Color.Black,
                     fontWeight = FontWeight.Bold
@@ -99,7 +146,7 @@ fun DashboardUI(
 
         // Balanço do Mês
         DashboardCardBalanco(
-            value = vendasUiState.value.totalValueAllVendas - 0.0,
+            value = balanco,
             modifier = Modifier
         )
 
@@ -112,12 +159,12 @@ fun DashboardUI(
         ) {
             DashboardCardVendasCompras(
                 type = 0,
-                value = vendasUiState.value.totalValueAllVendas,
+                value = totalVendas,
                 modifier = Modifier
             )
             DashboardCardVendasCompras(
                 type = 1,
-                value = 0.0,
+                value = totalCompras,
                 modifier = Modifier
             )
         }
@@ -139,27 +186,42 @@ fun DashboardUI(
                 .heightIn(max = 500.dp,),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(vendasList) { venda ->
-                if (vendasList.size == 0) {
-                    // Nenhuma atividade neste mês
+            if (movimentacoes.isEmpty()) {
+
+                item {
+
                     Text(
-                        text = stringResource(R.string.dasboard_nenhuma_atividade_neste_m_s),
+                        text = stringResource(
+                            R.string.dasboard_nenhuma_atividade_neste_m_s
+                        ),
                         fontSize = 14.sp,
                         color = Color.Gray,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 26.dp, start = 16.dp)
+                            .padding(
+                                bottom = 26.dp,
+                                start = 16.dp
+                            )
                     )
                 }
-                DashboardCard(
-                    sellName = venda.nomeVenda,
-                    type = 0,
-                    dateTime = venda.dateTime,
-                    value = venda.valorVenda,
-                    modifier = Modifier
-                        .padding(start = 16.dp, end = 16.dp)
-                )
+
+            } else {
+
+                items(movimentacoes) { movimentacao ->
+
+                    DashboardCard(
+                        sellName = movimentacao.nome,
+                        type = movimentacao.type,
+                        dateTime = movimentacao.dateTime,
+                        value = movimentacao.valor,
+                        modifier = Modifier
+                            .padding(
+                                start = 16.dp,
+                                end = 16.dp
+                            )
+                    )
+                }
             }
         }
 

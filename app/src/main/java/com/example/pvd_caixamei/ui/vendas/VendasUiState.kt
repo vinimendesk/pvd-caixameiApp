@@ -4,21 +4,22 @@ import androidx.compose.runtime.MutableState
 import com.example.pvd_caixamei.data.ComprasEntity
 import com.example.pvd_caixamei.data.ProdutoEntity
 import com.example.pvd_caixamei.data.VendasEntity
+import com.example.pvd_caixamei.ui.vendas.componentes.ShoppingCartItem
 
 data class VendasUiState (
 
     val produtoList: List<ProdutoEntity> = listOf(),
     val vendasList: List<VendasEntity> = listOf(),
-    /*val totalValue: Double = produtoList.sumOf { it.price },*/
+    val shoppingCarList: List<ShoppingCartItem> = emptyList(),
     val openCarrinhaDeVendaDialog: Boolean = false, // Verifica se a caixa de diálogo para carrinho de venda está anerta
-    val shoppingCarList: List<Int> = emptyList(),
+    val openProductSelectorDialog : Boolean = false,
     val showErros: Boolean = false // Diz se pode mostrar os erros.
 
     ) {
 
         // valor total no carrinho de vendas.
         val totalValue: Double
-            get() = produtoList.sumOf { it.price }
+            get() = shoppingCarList.sumOf { it.totalValue }
 
         // valor total de todas as vendas feitas.
         val totalValueAllVendas: Double

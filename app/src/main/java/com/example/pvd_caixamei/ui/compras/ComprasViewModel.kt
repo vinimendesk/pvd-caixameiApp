@@ -1,4 +1,4 @@
-package com.example.pvd_caixamei.ui.vendas
+package com.example.pvd_caixamei.ui.compras
 
 import android.content.Context
 import android.os.Build
@@ -9,9 +9,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.withTransaction
 import com.example.pvd_caixamei.MainApplication
-import com.example.pvd_caixamei.R
+import com.example.pvd_caixamei.data.ComprasEntity
 import com.example.pvd_caixamei.data.ProdutoEntity
 import com.example.pvd_caixamei.data.VendasEntity
+import com.example.pvd_caixamei.ui.compras.componentes.ShoppingCartCompraItem
 import com.example.pvd_caixamei.ui.vendas.componentes.ShoppingCartItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -22,40 +23,39 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
-
-class VendasViewModel: ViewModel() {
+class ComprasViewModel: ViewModel() {
 
     // Definindo o UiState como um MutableStateFlow
-    private val _vendasUiState = MutableStateFlow(VendasUiState())
+    private val _comprasUiState = MutableStateFlow(ComprasUiState())
 
     // Coleta do StateFlow do _profileUiState
-    val vendasUiState = _vendasUiState.asStateFlow()
+    val comprasUiState = _comprasUiState.asStateFlow()
 
-    private val vendasDao = MainApplication.pvdDatabase.getVendasDAO()
+    private val comprasDao = MainApplication.pvdDatabase.getComprasDAO()
     private val produtoDao = MainApplication.pvdDatabase.getProdutoDAO()
 
     init {
-        loadAllVendas()
+        loadAllCompras()
     }
 
     // ----- Função Abrir Caixa de Diálogo -----
     fun openCarrinhoDeVendasDialog(produtoList: List<ProdutoEntity>) {
-        _vendasUiState.update {
+        _comprasUiState.update {
             it.copy(
                 produtoList = produtoList, // Recebe a lista de produtos para atualizar na tela de carrinho de vendas.
-                openCarrinhaDeVendaDialog = true
+                openCarrinhaDeCompraDialog = true
             )
         }
     }
 
     fun closeCarrinhoDeVendasDialog() {
-        _vendasUiState.update {
-            it.copy(openCarrinhaDeVendaDialog = false)
+        _comprasUiState.update {
+            it.copy(openCarrinhaDeCompraDialog = false)
         }
     }
 
     fun openProductSelectorDialog() {
-        _vendasUiState.update {
+        _comprasUiState.update {
             it.copy(
                 openProductSelectorDialog = true
             )
@@ -63,18 +63,15 @@ class VendasViewModel: ViewModel() {
     }
 
     fun closeProductSelectorDialog() {
-        _vendasUiState.update {
+        _comprasUiState.update {
             it.copy(openProductSelectorDialog = false)
         }
     }
 
     // Adicionar um produto ao carrinho.
     fun addProductToCart(produto: ProdutoEntity) {
-        if (produto.estoque <= 0) {
-            return
-        }
 
-        _vendasUiState.update { state ->
+        _comprasUiState.update { state ->
 
             val alreadyInCart = state.shoppingCarList.any {
                 it.produto.produtoId == produto.produtoId
@@ -82,7 +79,7 @@ class VendasViewModel: ViewModel() {
             if (alreadyInCart) {
                 state
             } else {
-                val newItem = ShoppingCartItem(
+                val newItem = ShoppingCartCompraItem(
                     produto = produto,
                     quantity = 1
                 )
@@ -97,7 +94,7 @@ class VendasViewModel: ViewModel() {
 
     // Remover um produto do carrinho.
     fun removeProductFromCart(produtoId: Int) {
-        _vendasUiState.update { state ->
+        _comprasUiState.update { state ->
 
             state.copy(
                 shoppingCarList = state.shoppingCarList.filter {
@@ -110,21 +107,16 @@ class VendasViewModel: ViewModel() {
     // Aumentar a quantidade de um produto no carrinho
     fun increaseProductQuantity(produtoId: Int) {
 
-        _vendasUiState.update { state ->
+        _comprasUiState.update { state ->
 
             val updatedCart = state.shoppingCarList.map { item ->
 
                 if (item.produto.produtoId == produtoId) {
 
-                    if (item.quantity < item.produto.estoque) {
 
-                        item.copy(
-                            quantity = item.quantity + 1
-                        )
-
-                    } else {
-                        item
-                    }
+                    item.copy(
+                        quantity = item.quantity + 1
+                    )
 
                 } else {
                     item
@@ -143,7 +135,7 @@ class VendasViewModel: ViewModel() {
     // Diminuir a quantidade de um produto no carrinho
     fun decreaseProductQuantity(produtoId: Int) {
 
-        _vendasUiState.update { state ->
+        _comprasUiState.update { state ->
 
             val updatedCart = state.shoppingCarList.mapNotNull { item ->
 
@@ -173,22 +165,48 @@ class VendasViewModel: ViewModel() {
 
     }
 
+    fun updatePurchaseUnitPrice(
+        produtoId: Int,
+        price: String
+    ) {
+        _comprasUiState.update { state ->
+
+            val updatedCart = state.shoppingCarList.map { item ->
+
+                if (item.produto.produtoId == produtoId) {
+
+                    // Atualiza somente o preço do produto alterado.
+                    item.copy(
+                        unitPrice = price
+                    )
+
+                } else {
+                    item
+                }
+            }
+
+            state.copy(
+                shoppingCarList = updatedCart
+            )
+        }
+    }
+
 
     fun showValidationErros(context: Context) {
-        _vendasUiState.update {
+        _comprasUiState.update {
             it.copy(showErros = true)
         }
 
-        if (vendasUiState.value.finishSaleErrorDialog) {
+        if (comprasUiState.value.finishSaleErrorDialog) {
             Toast.makeText(
                 context,
-                "Não foi possível finalizar a venda.",
+                "Não foi possível finalizar a compra.",
                 Toast.LENGTH_SHORT
             ).show()
         }
 
         viewModelScope.launch {
-            _vendasUiState.update {
+            _comprasUiState.update {
                 delay(1000)
                 it.copy(showErros = false)
             }
@@ -196,12 +214,12 @@ class VendasViewModel: ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun finishSale(context: Context) {
+    fun finishBuy(context: Context) {
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
 
-                val cart = vendasUiState.value.shoppingCarList
+                val cart = comprasUiState.value.shoppingCarList
 
                 if (cart.isEmpty()) {
 
@@ -220,62 +238,75 @@ class VendasViewModel: ViewModel() {
 
                     cart.forEach { item ->
 
-                        val estoqueAtualizado = produtoDao.diminuirEstoque(
+                        /*
+                        * Converte o preço informado pelo usuário
+                        * de String para Double.
+                        */
+                        val unitPrice = item.unitPrice.toDoubleOrNull()
+
+                        /*
+                         * Se o preço não for válido, interrompemos
+                         * toda a transação.
+                         */
+                        if (unitPrice == null || unitPrice <= 0) {
+
+                            throw IllegalStateException(
+                                "Informe um preço de compra válido para ${item.produto.nome}"
+                            )
+                        }
+
+                        val totalCompra = unitPrice * item.quantity
+
+                        produtoDao.aumentarEstoque(
                             produtoId = item.produto.produtoId,
                             quantidade = item.quantity
                         )
 
-                        if (estoqueAtualizado == 0) {
-                            throw IllegalStateException(
-                                "Estoque insuficiente para ${item.produto.nome}"
-                            )
-                        }
-
-                        val venda = VendasEntity(
-                            nomeVenda = item.produto.nome,
-                            valorVenda = item.produto.price * item.quantity,
-                            quantity = item.quantity,
-                            dateTime = LocalDateTime.now()
+                        val compra = ComprasEntity(
+                            nomeCompra = item.produto.nome,
+                            dateTime = LocalDateTime.now(),
+                            price = totalCompra,
+                            quantity = item.quantity
                         )
 
-                        vendasDao.addVendas(venda)
+                        comprasDao.addCompras(compra)
 
                     }
                 }
-
-            withContext(Dispatchers.Main) {
-
-                Toast.makeText(
-                    context,
-                    "Venda realizada com sucesso.",
-                    Toast.LENGTH_SHORT
-                ).show()
-
-                Log.d(
-                    "RoomDB",
-                    "Venda realizada com sucesso."
-                )
-
-                _vendasUiState.update {
-                    it.copy(
-                        shoppingCarList = emptyList(),
-                        openCarrinhaDeVendaDialog = false
-                    )
-                }
-            }
-        } catch (e: Exception) {
 
                 withContext(Dispatchers.Main) {
 
                     Toast.makeText(
                         context,
-                        "Erro ao realizar venda: $e",
+                        "compra realizada com sucesso.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    Log.d(
+                        "RoomDB",
+                        "compra realizada com sucesso."
+                    )
+
+                    _comprasUiState.update {
+                        it.copy(
+                            shoppingCarList = emptyList(),
+                            openCarrinhaDeCompraDialog = false
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+
+                withContext(Dispatchers.Main) {
+
+                    Toast.makeText(
+                        context,
+                        "Erro ao realizar compra: $e",
                         Toast.LENGTH_SHORT
                     ).show()
 
                     Log.e(
                         "RoomDB",
-                        "Erro ao realizar venda",
+                        "Erro ao realizar compra",
                         e
                     )
 
@@ -285,40 +316,40 @@ class VendasViewModel: ViewModel() {
         }
     }
 
-    fun addVendas(venda: VendasEntity, context: Context) {
+    fun addCompra(compra: ComprasEntity, context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                vendasDao.addVendas(venda)
+                comprasDao.addCompras(compra)
                 withContext(Dispatchers.Main) {
                     Toast.makeText(
                         context,
-                        "Venda de${venda.nomeVenda} realizada com sucesso.",
+                        "compra de${compra.nomeCompra} realizada com sucesso.",
                         Toast.LENGTH_SHORT
                     ).show()
-                    Log.d("Roomdb", "Venda de ${venda.nomeVenda} realizada com sucesso.")
+                    Log.d("Roomdb", "compra de ${compra.nomeCompra} realizada com sucesso.")
                     closeCarrinhoDeVendasDialog()
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(
                         context,
-                        "Erro ao realizar venda de ${venda.nomeVenda} ${e}",
+                        "Erro ao realizar compra de ${compra.nomeCompra} ${e}",
                         Toast.LENGTH_SHORT
                     ).show()
-                    Log.e("Roomdb", "Erro realizar venda de ${venda.nomeVenda} ${e}")
+                    Log.e("Roomdb", "Erro realizar compra de ${compra.nomeCompra} ${e}")
                 }
             }
         }
     }
 
-    fun loadAllVendas() {
+    fun loadAllCompras() {
         viewModelScope.launch(Dispatchers.IO) {
-            vendasDao.getAllVendas().collect { vendas ->
-                _vendasUiState.update {
-                    it.copy(vendasList = vendas)
+            comprasDao.getAllCompras().collect { compras ->
+                _comprasUiState.update {
+                    it.copy(comprasList = compras)
                 }
             }
         }
     }
-
 }
+
