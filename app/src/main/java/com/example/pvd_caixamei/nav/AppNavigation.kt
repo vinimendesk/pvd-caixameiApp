@@ -20,6 +20,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.pvd_caixamei.data.auth.AuthState
+import com.example.pvd_caixamei.ui.compras.ComprasUI
+import com.example.pvd_caixamei.ui.compras.ComprasUiState
+import com.example.pvd_caixamei.ui.compras.ComprasViewModel
 import com.example.pvd_caixamei.ui.dashboard.DashboardUI
 import com.example.pvd_caixamei.ui.login.AuthViewModel
 import com.example.pvd_caixamei.ui.login.LoginScreen
@@ -110,6 +113,9 @@ fun MainNavigation(
     val vendasViewModel: VendasViewModel = viewModel()
     val vendasUiState = vendasViewModel.vendasUiState.collectAsState()
 
+    val comprasViewModel: ComprasViewModel = viewModel()
+    val comprasUiState = comprasViewModel.comprasUiState.collectAsState()
+
     val context = LocalContext.current
 
     Scaffold(
@@ -134,6 +140,7 @@ fun MainNavigation(
             composable(ScreenType.Dashboard.name) {
                 DashboardUI(
                     vendasUiState = vendasUiState,
+                    comprasUiState = comprasUiState,
                     modifier = Modifier.padding(paddingValues)
                 )
             }
@@ -158,8 +165,9 @@ fun MainNavigation(
             }
 
             composable(ScreenType.Compras.name) {
-                ProdutosUI(
-                    produtosViewModel = produtosViewModel,
+                ComprasUI(
+                    comprasViewModel = comprasViewModel,
+                    comprasUiState = comprasUiState,
                     produtosUiState = produtosUiState,
                     context = context,
                     modifier = Modifier.padding(paddingValues)

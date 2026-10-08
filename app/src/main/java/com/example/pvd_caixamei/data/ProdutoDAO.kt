@@ -29,7 +29,6 @@ interface ProdutoDAO {
     // Diminui o estoque do produto.
     // A condição "estoque >= :quantidade" garante que
     // nunca seja possível deixar o estoque negativo.
-    //
     // O retorno é a quantidade de linhas alteradas:
     // 1 = estoque atualizado com sucesso
     // 0 = produto não existe ou estoque insuficiente
@@ -43,5 +42,15 @@ interface ProdutoDAO {
         produtoId: Int,
         quantidade: Int
     ): Int
+
+    @Query("""
+    UPDATE ProdutoEntity
+    SET estoque = estoque + :quantidade
+    WHERE produtoId = :produtoId
+""")
+    fun aumentarEstoque(
+        produtoId: Int,
+        quantidade: Int
+    )
 
 }

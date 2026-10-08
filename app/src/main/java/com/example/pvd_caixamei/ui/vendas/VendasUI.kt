@@ -188,7 +188,7 @@ fun VendasUI(
                     produtoId
                 )
             },
-            isValid = true,
+            isValid = vendasUiState.value.isValid,
             totalValue = vendasUiState.value.totalValue,
             showValidationErros = { vendasViewModel.showValidationErros(context) },
             finishSale = { vendasViewModel.finishSale(context) },
