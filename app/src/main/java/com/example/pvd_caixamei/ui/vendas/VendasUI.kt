@@ -5,6 +5,9 @@ import com.example.pvd_caixamei.ui.produtos.ProdutosUiState
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,8 +29,13 @@ import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,6 +52,7 @@ import com.example.pvd_caixamei.ui.theme.PinkDashboard
 import com.example.pvd_caixamei.ui.vendas.componentes.AdicionarProdutoDialog
 import com.example.pvd_caixamei.ui.vendas.componentes.CarrinhoDeVendaDialog
 import com.example.pvd_caixamei.ui.vendas.componentes.VendasCard
+import kotlinx.coroutines.delay
 import java.time.LocalDateTime
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -55,6 +64,15 @@ fun VendasUI(
     context: Context,
     modifier: Modifier
 ) {
+
+    var showContent by remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(Unit) {
+        delay(100)
+        showContent = true
+    }
 
     val produtoList = vendasUiState.value.produtoList
     val vendasList = vendasUiState.value.vendasList
@@ -147,13 +165,20 @@ fun VendasUI(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ){
             items(vendasListOrd) { venda ->
-                VendasCard(
-                    image = null,
-                    productName = venda.nomeVenda,
-                    quantity = venda.quantity,
-                    value = venda.valorVenda,
-                    modifier = Modifier
-                )
+                AnimatedVisibility(
+                    visible = showContent,
+                    enter = fadeIn() + slideInVertically(
+                        initialOffsetY = { 30 }
+                    )
+                ) {
+                    VendasCard(
+                        image = null,
+                        productName = venda.nomeVenda,
+                        quantity = venda.quantity,
+                        value = venda.valorVenda,
+                        modifier = Modifier
+                    )
+                }
             }
         }
 

@@ -149,7 +149,7 @@ fun CarrinhoDeVendaDialog(
                                 item.produto.produtoId
                             )
                         },
-                        modifier = Modifier
+                        modifier = Modifier.animateItem()
                     )
                 }
             }
@@ -170,12 +170,8 @@ fun CarrinhoDeVendaDialog(
                     modifier = Modifier
                         .align(Alignment.Bottom)
                 )
-                Text(
-                    text = stringResource(R.string.TotalValueVendasDialog, totalValue),
-                    fontSize = 22.sp,
-                    color = PinkDashboard,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
+                AnimatedTotalValue(
+                    value = totalValue
                 )
             }
 

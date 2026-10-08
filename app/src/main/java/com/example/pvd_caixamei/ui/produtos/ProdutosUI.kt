@@ -1,6 +1,9 @@
 package com.example.pvd_caixamei.ui.produtos
 
 import android.content.Context
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,9 +24,14 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,6 +49,7 @@ import com.example.pvd_caixamei.data.ProdutoEntity
 import com.example.pvd_caixamei.ui.produtos.componentes.NewProductDialog
 import com.example.pvd_caixamei.ui.produtos.componentes.ProdutosCard
 import com.example.pvd_caixamei.ui.theme.PinkDashboard
+import kotlinx.coroutines.delay
 
 @Composable
 fun ProdutosUI(
@@ -49,6 +58,15 @@ fun ProdutosUI(
     context: Context,
     modifier: Modifier
 ) {
+
+    var showContent by remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(Unit) {
+        delay(100)
+        showContent = true
+    }
 
     val produtosList = produtosUiState.value.produtoList
     val productCount = produtosUiState.value.productNumber
@@ -118,18 +136,25 @@ fun ProdutosUI(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ){
             items(produtosList) { produto ->
-                ProdutosCard(
-                    image = null,
-                    productName = produto.nome,
-                    value = produto.price,
-                    quantity = produto.estoque,
-                    category = produto.categoria,
-                    deleteProduct = {
-                        produtosViewModel.deleteProduto(produto)
-                        produtosViewModel.loadAllProducts()
-                    },
-                    modifier = Modifier
-                )
+                AnimatedVisibility(
+                    visible = showContent,
+                    enter = fadeIn() + slideInVertically(
+                        initialOffsetY = { 30 }
+                    )
+                ) {
+                    ProdutosCard(
+                        image = null,
+                        productName = produto.nome,
+                        value = produto.price,
+                        quantity = produto.estoque,
+                        category = produto.categoria,
+                        deleteProduct = {
+                            produtosViewModel.deleteProduto(produto)
+                            produtosViewModel.loadAllProducts()
+                        },
+                        modifier = Modifier
+                    )
+                }
             }
         }
 

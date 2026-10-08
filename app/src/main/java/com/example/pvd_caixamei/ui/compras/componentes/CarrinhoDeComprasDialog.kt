@@ -5,6 +5,11 @@ import com.example.pvd_caixamei.ui.vendas.componentes.ShoppingCartItem
 
 import android.util.SparseArray
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -59,6 +64,7 @@ import com.example.pvd_caixamei.animations.errorTextColor
 import com.example.pvd_caixamei.animations.shakeAnimation
 import com.example.pvd_caixamei.data.ProdutoEntity
 import com.example.pvd_caixamei.ui.theme.PinkDashboard
+import com.example.pvd_caixamei.ui.vendas.componentes.AnimatedTotalValue
 
 @Composable
 fun CarrinhoDeComprasDialog(
@@ -136,32 +142,33 @@ fun CarrinhoDeComprasDialog(
                         it.produto.produtoId
                     }
                 ) { item ->
-                    CarrinhoDeComprasCard(
-                        item = item,
-                        onIncrease = {
-                            onIncreaseProduct(
-                                item.produto.produtoId
-                            )
-                        },
-                        onDecrease = {
-                            onDecreaseProduct(
-                                item.produto.produtoId
-                            )
-                        },
-                        onRemove = {
-                            onRemoveProduct(
-                                item.produto.produtoId
-                            )
-                        },
-                        onUnitPriceChange = { price ->
+
+                        CarrinhoDeComprasCard(
+                            item = item,
+                            onIncrease = {
+                                onIncreaseProduct(
+                                    item.produto.produtoId
+                                )
+                            },
+                            onDecrease = {
+                                onDecreaseProduct(
+                                    item.produto.produtoId
+                                )
+                            },
+                            onRemove = {
+                                onRemoveProduct(
+                                    item.produto.produtoId
+                                )
+                            },
+                            onUnitPriceChange = { price ->
                                 onUnitPriceChange(
                                     item.produto.produtoId,
                                     price
                                 )
-                        },
-                        modifier = Modifier
-                    )
-                }
+                            },
+                            modifier = Modifier.animateItem()
+                        )
+                    }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -180,12 +187,8 @@ fun CarrinhoDeComprasDialog(
                     modifier = Modifier
                         .align(Alignment.Bottom)
                 )
-                Text(
-                    text = stringResource(R.string.TotalValueVendasDialog, totalValue),
-                    fontSize = 22.sp,
-                    color = PinkDashboard,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
+                AnimatedTotalValue(
+                    value = totalValue
                 )
             }
 
@@ -219,7 +222,6 @@ fun CarrinhoDeComprasDialog(
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-            11
             // Button "Adicionar Produto"
             Button(
                 onClick = {

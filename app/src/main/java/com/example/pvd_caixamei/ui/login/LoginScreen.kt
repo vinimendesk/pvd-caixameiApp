@@ -60,7 +60,7 @@ fun LoginScreen(
 
         // Nome do aplicativo.
         Text(
-            text = "PVD CAIXA MEI",
+            text = "CaixaFácil",
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
             color = PinkDashboard

@@ -2,6 +2,9 @@ package com.example.pvd_caixamei.ui.dashboard
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,7 +23,12 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,6 +47,7 @@ import com.example.pvd_caixamei.ui.theme.PinkDashboard
 import com.example.pvd_caixamei.ui.theme.PinkGray
 import com.example.pvd_caixamei.ui.vendas.VendasUiState
 import com.example.pvd_caixamei.ui.vendas.componentes.VendasCard
+import kotlinx.coroutines.delay
 import java.time.LocalDateTime
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -48,6 +57,15 @@ fun DashboardUI(
     comprasUiState: State<ComprasUiState>,
     modifier: Modifier
 ) {
+
+    var showContent by remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(Unit) {
+        delay(100)
+        showContent = true
+    }
 
     val vendasList = vendasUiState.value.vendasList
     val comprasList = comprasUiState.value.comprasList
@@ -121,34 +139,48 @@ fun DashboardUI(
                 .padding(bottom = 24.dp, start = 16.dp)
         )
 
-        // Março 2026
-        Card(
-            colors = CardDefaults.cardColors(containerColor = PinkGray),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                .height(50.dp)
+        AnimatedVisibility(
+            visible = showContent,
+            enter = fadeIn() + slideInVertically(
+                initialOffsetY = { 30 }
+            )
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
+            // Março 2026
+            Card(
+                colors = CardDefaults.cardColors(containerColor = PinkGray),
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .height(50.dp)
             ) {
-                Text(
-                    text = "Acompanhamento Financeiro",
-                    fontSize = 14.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    Text(
+                        text = "Acompanhamento Financeiro",
+                        fontSize = 14.sp,
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
 
-        // Balanço do Mês
-        DashboardCardBalanco(
-            value = balanco,
-            modifier = Modifier
-        )
+        AnimatedVisibility(
+            visible = showContent,
+            enter = fadeIn() + slideInVertically(
+                initialOffsetY = { 30 }
+            )
+        ) {
+            // Balanço do Mês
+            DashboardCardBalanco(
+                value = balanco,
+                modifier = Modifier
+            )
+        }
 
         // Vendas e Balanço
         Row(
@@ -157,16 +189,32 @@ fun DashboardUI(
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
         ) {
-            DashboardCardVendasCompras(
-                type = 0,
-                value = totalVendas,
-                modifier = Modifier
-            )
-            DashboardCardVendasCompras(
-                type = 1,
-                value = totalCompras,
-                modifier = Modifier
-            )
+            AnimatedVisibility(
+                visible = showContent,
+                enter = fadeIn() + slideInVertically(
+                    initialOffsetY = { 30 }
+                )
+            ) {
+
+                DashboardCardVendasCompras(
+                    type = 0,
+                    value = totalVendas,
+                    modifier = Modifier
+                )
+            }
+
+            AnimatedVisibility(
+                visible = showContent,
+                enter = fadeIn() + slideInVertically(
+                    initialOffsetY = { 30 }
+                )
+            ) {
+                DashboardCardVendasCompras(
+                    type = 1,
+                    value = totalCompras,
+                    modifier = Modifier
+                )
+            }
         }
 
         // Atividade Recente
@@ -210,17 +258,24 @@ fun DashboardUI(
 
                 items(movimentacoes) { movimentacao ->
 
-                    DashboardCard(
-                        sellName = movimentacao.nome,
-                        type = movimentacao.type,
-                        dateTime = movimentacao.dateTime,
-                        value = movimentacao.valor,
-                        modifier = Modifier
-                            .padding(
-                                start = 16.dp,
-                                end = 16.dp
-                            )
-                    )
+                    AnimatedVisibility(
+                        visible = showContent,
+                        enter = fadeIn() + slideInVertically(
+                            initialOffsetY = { 30 }
+                        )
+                    ) {
+                        DashboardCard(
+                            sellName = movimentacao.nome,
+                            type = movimentacao.type,
+                            dateTime = movimentacao.dateTime,
+                            value = movimentacao.valor,
+                            modifier = Modifier
+                                .padding(
+                                    start = 16.dp,
+                                    end = 16.dp
+                                )
+                        )
+                    }
                 }
             }
         }
